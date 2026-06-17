@@ -1,40 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Schedule a Meeting with Mohit</title>
 <style>
+*{
+box-sizing:border-box;
+}
 
 body{
 font-family:Arial,sans-serif;
-background:#f5f7fb;
-max-width:600px;
-margin:auto;
+background:linear-gradient(135deg,#eef2ff,#dbeafe);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+margin:0;
 padding:20px;
 }
 
-.container{
-background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
+.card{
+background:#fff;
+width:100%;
+max-width:600px;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.12);
 }
 
 h1{
 text-align:center;
-margin-bottom:10px;
+color:#1e3a8a;
+margin-bottom:8px;
 }
 
-p{
+.subtitle{
 text-align:center;
-color:#666;
-margin-bottom:20px;
+color:#64748b;
+margin-bottom:25px;
 }
 
 label{
 display:block;
-margin-top:12px;
+margin-top:14px;
+margin-bottom:6px;
 font-weight:bold;
 }
 
@@ -42,21 +52,19 @@ input,
 select,
 textarea{
 width:100%;
-padding:10px;
-margin-top:5px;
-border:1px solid #ccc;
-border-radius:6px;
-box-sizing:border-box;
+padding:12px;
+border:1px solid #cbd5e1;
+border-radius:10px;
 }
 
 button{
 width:100%;
+padding:14px;
 margin-top:20px;
-padding:12px;
 background:#2563eb;
-color:white;
+color:#fff;
 border:none;
-border-radius:6px;
+border-radius:10px;
 font-size:16px;
 cursor:pointer;
 }
@@ -66,17 +74,25 @@ background:#1d4ed8;
 }
 
 #message{
-margin-top:15px;
 text-align:center;
+margin-top:15px;
 font-weight:bold;
 }
 
+.footer{
+text-align:center;
+margin-top:20px;
+color:#94a3b8;
+font-size:12px;
+}
 </style>
 </head>
 <body>
-<div class="container">
+<div class="card">
 <h1>Schedule a Meeting with Mohit</h1>
-<p>Select a convenient date and time</p>
+<p class="subtitle">
+Select a convenient date and time
+</p>
 <form id="appointmentForm">
 Full Name
 
@@ -96,11 +112,14 @@ Book Appointment
 </button>
 </form>
 <div id="message"></div>
+<div class="footer">
+Powered by Mohit Appointment Booking
+</div>
 </div>
 <script>
 
 const WEBAPP_URL =
-"https://script.google.com/macros/s/AKfycbv6ELtm3s8JVvhkqi0AiH3Lf1GqanVhJp1dh156kZjCwxERvjduwGKaLHYpru9JM2yKs0/exec";
+"https://script.google.com/macros/s/AKfycbv6ELtm3s8JVvhkqi0AiH3Lf1GqanVhJp1dh156kZjCwxERvjduwGKaLHypru9JM2yKs0/exec";
 
 document.getElementById("date").min =
 new Date().toISOString().split("T")[0];
@@ -112,27 +131,26 @@ for(let h=6; h<=23; h++){
 
 for(let m=0; m<60; m+=30){
 
-let hour =
-((h + 11) % 12) + 1;
+let hour=((h+11)%12)+1;
 
-let minute =
-m.toString().padStart(2,"0");
+let minute=
+String(m).padStart(2,"0");
 
-let ampm =
-h >= 12 ? "PM" : "AM";
+let ampm=
+h>=12 ? "PM" : "AM";
 
-let slot =
-hour.toString().padStart(2,"0")
+let slot=
+String(hour).padStart(2,"0")
 + ":" +
 minute +
 " " +
 ampm;
 
-let option =
+let option=
 document.createElement("option");
 
-option.value = slot;
-option.textContent = slot;
+option.value=slot;
+option.textContent=slot;
 
 timeSelect.appendChild(option);
 
@@ -146,6 +164,12 @@ document
 async function(e){
 
 e.preventDefault();
+
+const message =
+document.getElementById("message");
+
+message.style.color="#2563eb";
+message.textContent="Submitting...";
 
 const payload = {
 
@@ -169,12 +193,6 @@ document.getElementById("purpose").value
 
 };
 
-const message =
-document.getElementById("message");
-
-message.innerHTML =
-"Processing...";
-
 try{
 
 const response =
@@ -191,10 +209,9 @@ await response.json();
 
 if(result.status==="success"){
 
-message.style.color =
-"green";
+message.style.color="green";
 
-message.innerHTML =
+message.textContent=
 "Appointment booked successfully.";
 
 document
@@ -204,22 +221,22 @@ document
 }
 else{
 
-message.style.color =
-"red";
+message.style.color="red";
 
-message.innerHTML =
-result.message;
-
-}
+message.textContent=
+result.message || "Booking failed.";
 
 }
-catch(err){
 
-message.style.color =
-"red";
+}
+catch(error){
 
-message.innerHTML =
-"Booking failed.";
+message.style.color="red";
+
+message.textContent=
+"Unable to connect to booking server.";
+
+console.log(error);
 
 }
 
