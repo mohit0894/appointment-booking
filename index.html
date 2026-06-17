@@ -117,7 +117,7 @@ async function loadSlots(){
       }
    });
  }catch(e){
-   c.innerHTML="Unable to load slots";
+   c.innerHTML="Error: "+e.message;
  }
 }
 
