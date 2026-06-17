@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Appointment Booking</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background:#f4f6f9;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+input,select,textarea{
+width:100%;
+padding:12px;
+margin-top:10px;
+box-sizing:border-box;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:15px;
+border:none;
+border-radius:6px;
+background:#0d6efd;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+#result{
+margin-top:15px;
+text-align:center;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Book Appointment</h2>
+
+<form id="appointmentForm">
+
+<input
+type="text"
+id="name"
+placeholder="Full Name"
+required>
+
+<input
+type="tel"
+id="mobile"
+placeholder="Mobile Number"
+required>
+
+<input
+type="email"
+id="email"
+placeholder="Email (Optional)">
+
+<input
+type="date"
+id="date"
+required
+onchange="loadSlots()">
+
+<select id="time" required>
+<option value="">Select Date First</option>
+</select>
+
+<textarea
+id="purpose"
+rows="4"
+placeholder="Purpose of Appointment"></textarea>
+
+<button type="submit">
+Book Appointment
+</button>
+
+</form>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+const WEBAPP_URL =
+"https://script.google.com/macros/s/AKfycby6ELtm3s8JYvhkqi0AiH3Lf1GqanVhJp1dh156kzjCwxERyjdUwGKaLHypru9JM2ykSQ/exec";
+
+const slots = [
+"10:00 AM",
+"11:00 AM",
+"12:00 PM",
+"02:00 PM",
+"03:00 PM",
+"04:00 PM",
+"05:00 PM"
+];
+
+async function loadSlots(){
+
+let date =
+document.getElementById("date").value;
+
+if(!date) return;
+
+try{
+
+let response =
+await fetch(
+WEBAPP_URL + "?date=" + date
+);
+
+let booked =
+await response.json();
+
+let select =
+document.getElementById("time");
+
+select.innerHTML = "";
+
+let availableCount = 0;
+
+slots.forEach(slot=>{
+
+if(!booked.includes(slot)){
+
+let option =
+document.createElement("option");
+
+option.value = slot;
+option.text = slot;
+
+select.appendChild(option);
+
+availableCount++;
+
+}
+
+});
+
+if(availableCount === 0){
+
+let option =
+document.createElement("option");
+
+option.text =
+"No Slots Available";
+
+select.appendChild(option);
+
+}
+
+}
+catch(err){
+
+console.log(err);
+
+}
+
+}
+
+document
+.getElementById("appointmentForm")
+.addEventListener("submit",
+async function(e){
+
+e.preventDefault();
+
+let payload = {
+
+name:
+document.getElementById("name").value,
+
+mobile:
+document.getElementById("mobile").value,
+
+email:
+document.getElementById("email").value,
+
+date:
+document.getElementById("date").value,
+
+time:
+document.getElementById("time").value,
+
+purpose:
+document.getElementById("purpose").value
+
+};
+
+try{
+
+let response =
+await fetch(
+WEBAPP_URL,
+{
+method:"POST",
+body:JSON.stringify(payload)
+});
+
+let result =
+await response.json();
+
+document
+.getElementById("result")
+.innerHTML =
+result.message;
+
+if(result.status==="success"){
+
+document
+.getElementById("appointmentForm")
+.reset();
+
+document
+.getElementById("time")
+.innerHTML =
+"<option>Select Date First</option>";
+
+}
+
+}
+catch(err){
+
+document
+.getElementById("result")
+.innerHTML =
+"Error. Please try again.";
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
