@@ -94,28 +94,54 @@ for(let h=6;h<=23;h++){
 document.getElementById("date").addEventListener("change",loadSlots);
 
 async function loadSlots(){
- const date=document.getElementById("date").value;
- const c=document.getElementById("slotContainer");
- c.innerHTML="Loading...";
 
- try{
-   const r=await fetch(WEBAPP_URL+"?date="+encodeURIComponent(date));
-   const booked=await r.json();
 
-   c.innerHTML="";
-   slots.forEach(slot=>{
-      if(!booked.includes(slot)){
-        const b=document.createElement("div");
-        b.className="slot";
-        b.textContent=slot;
-        b.onclick=()=>{
-          document.querySelectorAll(".slot").forEach(x=>x.classList.remove("selected"));
-          b.classList.add("selected");
-          document.getElementById("time").value=slot;
-        };
-        c.appendChild(b);
-      }
-   });
+
+const date=document.getElementById(“date”).value;
+
+
+
+const container=document.getElementById(“slotContainer”);
+
+
+
+container.innerHTML=“Testing…”;
+
+
+
+try{
+
+
+
+const response=await fetch(
+WEBAPP_URL + “?date=” + encodeURIComponent(date),
+{
+method:“GET”
+}
+);
+
+
+
+container.innerHTML =
+“Status: “ + response.status;
+
+
+
+}
+catch(e){
+
+
+
+container.innerHTML =
+“Error: “ + e.toString();
+
+
+
+}
+
+
+
+}
  }catch(e){
    c.innerHTML="Error: "+e.message;
  }
