@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Schedule a Meeting with Mohit</title>
+
 <style>
 *{
 box-sizing:border-box;
@@ -55,6 +56,7 @@ width:100%;
 padding:12px;
 border:1px solid #cbd5e1;
 border-radius:10px;
+font-size:14px;
 }
 
 button{
@@ -86,36 +88,53 @@ color:#94a3b8;
 font-size:12px;
 }
 </style>
+
 </head>
+
 <body>
+
 <div class="card">
+
 <h1>Schedule a Meeting with Mohit</h1>
+
 <p class="subtitle">
 Select a convenient date and time
 </p>
+
 <form id="appointmentForm">
-Full Name
 
-Mobile Number
+<label>Full Name</label>
+<input type="text" id="name" required>
 
-Email (Optional)
+<label>Mobile Number</label>
+<input type="text" id="mobile" required>
 
-Date
+<label>Email (Optional)</label>
+<input type="email" id="email">
 
-Time Slot
+<label>Date</label>
+<input type="date" id="date" required>
 
-Purpose
+<label>Time Slot</label>
+<select id="time" required></select>
 
+<label>Purpose</label>
 <textarea id="purpose" rows="4"></textarea>
+
 <button type="submit">
 Book Appointment
 </button>
+
 </form>
+
 <div id="message"></div>
+
 <div class="footer">
 Powered by Mohit Appointment Booking
 </div>
+
 </div>
+
 <script>
 
 const WEBAPP_URL =
@@ -133,11 +152,9 @@ for(let m=0; m<60; m+=30){
 
 let hour=((h+11)%12)+1;
 
-let minute=
-String(m).padStart(2,"0");
+let minute=String(m).padStart(2,"0");
 
-let ampm=
-h>=12 ? "PM" : "AM";
+let ampm=h>=12 ? "PM" : "AM";
 
 let slot=
 String(hour).padStart(2,"0")
@@ -146,11 +163,11 @@ minute +
 " " +
 ampm;
 
-let option=
+let option =
 document.createElement("option");
 
-option.value=slot;
-option.textContent=slot;
+option.value = slot;
+option.textContent = slot;
 
 timeSelect.appendChild(option);
 
@@ -158,10 +175,7 @@ timeSelect.appendChild(option);
 
 }
 
-document
-.getElementById("appointmentForm")
-.addEventListener("submit",
-async function(e){
+document.getElementById("appointmentForm").addEventListener("submit", async function(e){
 
 e.preventDefault();
 
@@ -173,58 +187,42 @@ message.textContent="Submitting...";
 
 const payload = {
 
-name:
-document.getElementById("name").value,
-
-mobile:
-document.getElementById("mobile").value,
-
-email:
-document.getElementById("email").value,
-
-date:
-document.getElementById("date").value,
-
-time:
-document.getElementById("time").value,
-
-purpose:
-document.getElementById("purpose").value
+name:document.getElementById("name").value,
+mobile:document.getElementById("mobile").value,
+email:document.getElementById("email").value,
+date:document.getElementById("date").value,
+time:document.getElementById("time").value,
+purpose:document.getElementById("purpose").value
 
 };
 
 try{
 
-const response =
-await fetch(
+const response = await fetch(
 WEBAPP_URL,
 {
 method:"POST",
+headers:{
+"Content-Type":"text/plain;charset=utf-8"
+},
 body:JSON.stringify(payload)
 }
 );
 
-const result =
-await response.json();
+const result = await response.json();
 
 if(result.status==="success"){
 
 message.style.color="green";
+message.textContent=result.message;
 
-message.textContent=
-"Appointment booked successfully.";
-
-document
-.getElementById("appointmentForm")
-.reset();
+document.getElementById("appointmentForm").reset();
 
 }
 else{
 
 message.style.color="red";
-
-message.textContent=
-result.message || "Booking failed.";
+message.textContent=result.message;
 
 }
 
@@ -232,9 +230,7 @@ result.message || "Booking failed.";
 catch(error){
 
 message.style.color="red";
-
-message.textContent=
-"Unable to connect to booking server.";
+message.textContent="Unable to connect to booking server.";
 
 console.log(error);
 
@@ -243,5 +239,6 @@ console.log(error);
 });
 
 </script>
+
 </body>
 </html>
