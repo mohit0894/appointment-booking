@@ -154,14 +154,10 @@ let hour=((h+11)%12)+1;
 
 let minute=String(m).padStart(2,"0");
 
-let ampm=h>=12 ? "PM" : "AM";
-
 let slot=
-String(hour).padStart(2,"0")
+String(h).padStart(2,"0")
 + ":" +
-minute +
-" " +
-ampm;
+minute;
 
 let option =
 document.createElement("option");
