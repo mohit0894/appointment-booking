@@ -9,19 +9,53 @@
 <style>
 
 body{
-font-family: Arial, sans-serif;
-background:#f4f6f9;
+font-family: ‘Segoe UI’, sans-serif;
+background: linear-gradient(135deg,#667eea,#764ba2);
+min-height:100vh;
 margin:0;
 padding:20px;
 }
 
+
+
 .container{
-max-width:500px;
+max-width:550px;
 margin:auto;
 background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
+padding:30px;
+border-radius:20px;
+box-shadow:0 20px 50px rgba(0,0,0,0.2);
+}
+
+
+
+h2{
+text-align:center;
+color:#333;
+margin-bottom:5px;
+}
+
+
+
+.subtitle{
+text-align:center;
+color:#777;
+margin-bottom:25px;
+}
+
+
+
+button{
+background:#667eea;
+color:white;
+border:none;
+transition:0.3s;
+}
+
+
+
+button:hover{
+transform:translateY(-2px);
 }
 
 h2{
@@ -119,13 +153,30 @@ const WEBAPP_URL =
 "https://script.google.com/macros/s/AKfycby6ELtm3s8JYvhkqi0AiH3Lf1GqanVhJp1dh156kzjCwxERyjdUwGKaLHypru9JM2ykSQ/exec";
 
 const slots = [
-"10:00 AM",
-"11:00 AM",
-"12:00 PM",
-"02:00 PM",
-"03:00 PM",
-"04:00 PM",
-"05:00 PM"
+“12:00 AM”,“12:30 AM”,
+“01:00 AM”,“01:30 AM”,
+“02:00 AM”,“02:30 AM”,
+“03:00 AM”,“03:30 AM”,
+“04:00 AM”,“04:30 AM”,
+“05:00 AM”,“05:30 AM”,
+“06:00 AM”,“06:30 AM”,
+“07:00 AM”,“07:30 AM”,
+“08:00 AM”,“08:30 AM”,
+“09:00 AM”,“09:30 AM”,
+“10:00 AM”,“10:30 AM”,
+“11:00 AM”,“11:30 AM”,
+“12:00 PM”,“12:30 PM”,
+“01:00 PM”,“01:30 PM”,
+“02:00 PM”,“02:30 PM”,
+“03:00 PM”,“03:30 PM”,
+“04:00 PM”,“04:30 PM”,
+“05:00 PM”,“05:30 PM”,
+“06:00 PM”,“06:30 PM”,
+“07:00 PM”,“07:30 PM”,
+“08:00 PM”,“08:30 PM”,
+“09:00 PM”,“09:30 PM”,
+“10:00 PM”,“10:30 PM”,
+“11:00 PM”,“11:30 PM”
 ];
 
 async function loadSlots(){
