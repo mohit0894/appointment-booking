@@ -1,108 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Schedule a Meeting with Mohit</title>
 <style>
 
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
-
 body{
-font-family:'Segoe UI',sans-serif;
-background:linear-gradient(135deg,#4f46e5,#7c3aed);
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
+font-family:Arial,sans-serif;
+background:#f5f7fb;
+max-width:600px;
+margin:auto;
 padding:20px;
 }
 
 .container{
-width:100%;
-max-width:900px;
 background:white;
-border-radius:24px;
-box-shadow:0 20px 50px rgba(0,0,0,0.25);
-padding:30px;
+padding:25px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
 
 h1{
-font-size:42px;
-margin-bottom:10px;
 text-align:center;
+margin-bottom:10px;
 }
 
-.subtitle{
+p{
 text-align:center;
 color:#666;
-margin-bottom:30px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:25px;
+margin-bottom:20px;
 }
 
 label{
 display:block;
-font-weight:600;
-margin-bottom:6px;
 margin-top:12px;
+font-weight:bold;
 }
 
 input,
 select,
 textarea{
 width:100%;
-padding:12px;
-border:1px solid #ddd;
-border-radius:10px;
-font-size:15px;
-}
-
-textarea{
-resize:vertical;
+padding:10px;
+margin-top:5px;
+border:1px solid #ccc;
+border-radius:6px;
+box-sizing:border-box;
 }
 
 button{
 width:100%;
-margin-top:25px;
-padding:15px;
-background:#4f46e5;
+margin-top:20px;
+padding:12px;
+background:#2563eb;
 color:white;
 border:none;
-border-radius:12px;
+border-radius:6px;
 font-size:16px;
-font-weight:600;
 cursor:pointer;
 }
 
 button:hover{
-opacity:0.9;
+background:#1d4ed8;
 }
 
-#result{
+#message{
 margin-top:15px;
-font-weight:600;
 text-align:center;
-}
-
-@media(max-width:768px){
-
-.grid{
-grid-template-columns:1fr;
-}
-
-h1{
-font-size:32px;
-}
-
+font-weight:bold;
 }
 
 </style>
@@ -110,37 +76,26 @@ font-size:32px;
 <body>
 <div class="container">
 <h1>Schedule a Meeting with Mohit</h1>
-<p class="subtitle">
-Select a convenient date and time for your appointment
-</p>
+<p>Select a convenient date and time</p>
 <form id="appointmentForm">
-<div class="grid">
-<div>
 Full Name
 
 Mobile Number
 
 Email (Optional)
 
-Select Date
+Date
 
-</div>
-<div>
-Available Time Slots
+Time Slot
 
-<select id="time" required>
-<option value="">Select Date First</option>
-</select>
 Purpose
 
-<textarea id="purpose" rows="6"></textarea>
-</div>
-</div>
+<textarea id="purpose" rows="4"></textarea>
 <button type="submit">
 Book Appointment
 </button>
-<div id="result"></div>
 </form>
+<div id="message"></div>
 </div>
 <script>
 
@@ -150,85 +105,36 @@ const WEBAPP_URL =
 document.getElementById("date").min =
 new Date().toISOString().split("T")[0];
 
-const slots = [
-"06:00 AM","06:30 AM",
-"07:00 AM","07:30 AM",
-"08:00 AM","08:30 AM",
-"09:00 AM","09:30 AM",
-"10:00 AM","10:30 AM",
-"11:00 AM","11:30 AM",
-"12:00 PM","12:30 PM",
-"01:00 PM","01:30 PM",
-"02:00 PM","02:30 PM",
-"03:00 PM","03:30 PM",
-"04:00 PM","04:30 PM",
-"05:00 PM","05:30 PM",
-"06:00 PM","06:30 PM",
-"07:00 PM","07:30 PM",
-"08:00 PM","08:30 PM",
-"09:00 PM","09:30 PM",
-"10:00 PM","10:30 PM",
-"11:00 PM","11:30 PM"
-];
-
-async function loadSlots(){
-
-let date =
-document.getElementById("date").value;
-
-if(!date) return;
-
-try{
-
-let response =
-await fetch(
-WEBAPP_URL + "?date=" + date
-);
-
-let booked =
-await response.json();
-
-let select =
+const timeSelect =
 document.getElementById("time");
 
-select.innerHTML = "";
+for(let h=6; h<=23; h++){
 
-let count = 0;
+for(let m=0; m<60; m+=30){
 
-slots.forEach(slot => {
+let hour =
+((h + 11) % 12) + 1;
 
-if(!booked.includes(slot)){
+let minute =
+m.toString().padStart(2,"0");
+
+let ampm =
+h >= 12 ? "PM" : "AM";
+
+let slot =
+hour.toString().padStart(2,"0")
++ ":" +
+minute +
+" " +
+ampm;
 
 let option =
 document.createElement("option");
 
 option.value = slot;
-option.text = slot;
+option.textContent = slot;
 
-select.appendChild(option);
-
-count++;
-
-}
-
-});
-
-if(count === 0){
-
-let option =
-document.createElement("option");
-
-option.text =
-"No Slots Available";
-
-select.appendChild(option);
-
-}
-
-}catch(error){
-
-document.getElementById("time").innerHTML =
-"<option>Error Loading Slots</option>";
+timeSelect.appendChild(option);
 
 }
 
@@ -263,6 +169,12 @@ document.getElementById("purpose").value
 
 };
 
+const message =
+document.getElementById("message");
+
+message.innerHTML =
+"Processing...";
+
 try{
 
 const response =
@@ -277,40 +189,37 @@ body:JSON.stringify(payload)
 const result =
 await response.json();
 
-const resultDiv =
-document.getElementById("result");
-
 if(result.status==="success"){
 
-resultDiv.style.color="green";
+message.style.color =
+"green";
 
-resultDiv.innerHTML =
+message.innerHTML =
 "Appointment booked successfully.";
 
 document
 .getElementById("appointmentForm")
 .reset();
 
-document
-.getElementById("time")
-.innerHTML =
-"<option>Select Date First</option>";
-
 }
 else{
 
-resultDiv.style.color="red";
+message.style.color =
+"red";
 
-resultDiv.innerHTML =
+message.innerHTML =
 result.message;
 
 }
 
 }
-catch(error){
+catch(err){
 
-document.getElementById("result").innerHTML =
-"Unable to process request.";
+message.style.color =
+"red";
+
+message.innerHTML =
+"Booking failed.";
 
 }
 
